@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.NoSuchAlgorithmException;
 
 @CrossOrigin(origins = "*")
-@Controller
-@RequestMapping("/strings")
+@RestController
 public class StringAnalyzerController {
 
     @Autowired
@@ -31,7 +30,7 @@ public class StringAnalyzerController {
         this.analyzerService = analyzerService;
     }
 
-    @PostMapping
+    @PostMapping("/strings")
     public ResponseEntity<StringResponse> analyzeAndSaveString(@Valid @RequestBody StringRequest request) throws NoSuchAlgorithmException, MethodArgumentNotValidException {
 
         StringResponse response = analyzerService.createAndSave(request.getValue());
@@ -40,7 +39,7 @@ public class StringAnalyzerController {
                 .body(response);
     }
 
-    @GetMapping("/{string_value}")
+    @GetMapping("/strings/{string_value}")
     public ResponseEntity<StringResponse> getString(@PathVariable("string_value") String value) throws NoSuchAlgorithmException {
         StringResponse response = analyzerService.findString(value);
 
@@ -49,7 +48,7 @@ public class StringAnalyzerController {
                 .body(response);
     }
 
-    @GetMapping
+    @GetMapping("/strings")
     public ResponseEntity<StringListResponse> getStringWithFilter(@RequestParam (required = false) Boolean is_palindrome,
                                                                   @RequestParam(required = false) Integer min_length,
                                                                   @RequestParam(required = false) Integer max_length,
@@ -61,7 +60,7 @@ public class StringAnalyzerController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/filter-by-natural-language")
+    @GetMapping("/strings/filter-by-natural-language")
     public ResponseEntity<NaturalLanguageResponse> filterByNaturalLanguage(
             @RequestParam String query) {
 
@@ -76,7 +75,7 @@ public class StringAnalyzerController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{string_value}")
+    @DeleteMapping("/strings/{string_value}")
     public ResponseEntity<Void> deleteString(
             @PathVariable("string_value") String stringValue) {
 
