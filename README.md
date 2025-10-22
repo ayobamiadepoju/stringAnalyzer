@@ -2,14 +2,9 @@
 
 A high-performance RESTful API service that analyzes strings and stores their computed properties using in-memory storage. Built with Spring Boot 3.2.0 and Java 17, this API provides comprehensive string analysis including SHA-256 hashing, palindrome detection, character frequency analysis, and advanced filtering capabilities.
 
-[![Java](https://img.shields.io/badge/Java-17+-orange.svg)](https://www.oracle.com/java/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-brightgreen.svg)](https://spring.io/projects/spring-boot)
-[![Maven](https://img.shields.io/badge/Maven-3.6+-blue.svg)](https://maven.apache.org/)
-[![License](https://img.shields.io/badge/License-Educational-purple.svg)](https://github.com)
-
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Overview](#overview)
 - [Features](#features)
@@ -35,7 +30,7 @@ A high-performance RESTful API service that analyzes strings and stores their co
 
 ---
 
-## 🎯 Overview
+## Overview
 
 The String Analyzer API is a production-ready backend service designed for the Backend Wizards Stage 1 challenge. It demonstrates:
 
@@ -46,11 +41,11 @@ The String Analyzer API is a production-ready backend service designed for the B
 - **Robust Error Handling**: Comprehensive exception handling with meaningful error responses
 - **Type Safety**: Strict validation ensuring values are strings, not numbers or other types
 
-**Live Demo:** `https://your-deployed-url.com`
+**Live Demo:** `http://stringanalyzer-production-2c36.up.railway.app`
 
 ---
 
-## ✨ Features
+## Features
 
 ### Core Functionality
 - ✅ **String Analysis**
@@ -70,8 +65,8 @@ The String Analyzer API is a production-ready backend service designed for the B
 
 - ✅ **Natural Language Queries**
     - "all single word palindromic strings"
-    - "strings longer than 10 characters"
-    - "strings containing the letter z"
+    - "strings longer than X characters"
+    - "strings containing the letter a-z"
     - "palindromic strings that contain the first vowel"
 
 ### Technical Features
@@ -84,23 +79,23 @@ The String Analyzer API is a production-ready backend service designed for the B
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠Tech Stack
 
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| **Java** | 17+ | Programming language |
-| **Spring Boot** | 3.2.0 | Application framework |
-| **Maven** | 3.6+ | Dependency management & build tool |
-| **Lombok** | 1.18.30 | Reduce boilerplate code |
-| **Jackson** | 2.15.0 | JSON serialization/deserialization |
-| **Jakarta Validation** | 3.0.2 | Input validation |
+| Technology | Version  | Purpose |
+|-----------|----------|---------|
+| **Java** | 21       | Programming language |
+| **Spring Boot** | 3.5.6    | Application framework |
+| **Maven** | 3.6+     | Dependency management & build tool |
+| **Lombok** | 1.18.30  | Reduce boilerplate code |
+| **Jackson** | 2.15.0   | JSON serialization/deserialization |
+| **Jakarta Validation** | 3.0.2    | Input validation |
 | **ConcurrentHashMap** | Built-in | Thread-safe in-memory storage |
 
 **No Database Required!** Pure in-memory storage for maximum simplicity and performance.
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ### Layer Architecture
 
@@ -119,48 +114,9 @@ The String Analyzer API is a production-ready backend service designed for the B
 │        (Data Models & DTOs)                  │
 └─────────────────────────────────────────────┘
 ```
-
-### Data Flow
-
-```
-Client Request (JSON)
-    ↓
-Controller (Validation & Routing)
-    ↓
-Service (Business Logic & Analysis)
-    ↓
-Storage (ConcurrentHashMap)
-    ↓
-Service (DTO Conversion)
-    ↓
-Controller (HTTP Response)
-    ↓
-Client Response (JSON)
-```
-
-### In-Memory Storage Structure
-
-```
-InMemoryStringStorage
-├── stringsByHash (ConcurrentHashMap)
-│   ├── "abc123..." → AnalyzedString{value="racecar"}
-│   ├── "def456..." → AnalyzedString{value="level"}
-│   └── "ghi789..." → AnalyzedString{value="hello"}
-│
-└── stringsByValue (ConcurrentHashMap)
-    ├── "racecar" → AnalyzedString{id="abc123..."}
-    ├── "level" → AnalyzedString{id="def456..."}
-    └── "hello" → AnalyzedString{id="ghi789..."}
-```
-
-**Dual Indexing Benefits:**
-- O(1) lookup by SHA-256 hash
-- O(1) lookup by original string value
-- Both maps reference the same objects (no duplication)
-
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -245,17 +201,7 @@ The application will start and be available at: `http://localhost:8080`
 2025-10-21 16:00:00.123  INFO 12345 --- [main] c.b.s.StringAnalyzerApplication          : Started StringAnalyzerApplication in 2.456 seconds
 ```
 
-#### Method 2: Using JAR File (Production)
-
-```bash
-# Build the JAR
-mvn clean package
-
-# Run the JAR
-java -jar target/string-analyzer-0.0.1-SNAPSHOT.jar
-```
-
-#### Method 3: Using IDE
+#### Method 2: Using IDE
 
 1. Open the project in your IDE
 2. Navigate to `src/main/java/com/backendwizards/stringanalyzer/StringAnalyzerApplication.java`
@@ -271,18 +217,9 @@ Test that the API is running:
 curl http://localhost:8080/strings
 ```
 
-**Expected Response:**
-```json
-{
-  "data": [],
-  "count": 0,
-  "filters_applied": {}
-}
-```
-
 ---
 
-## 📚 API Documentation
+## API Documentation
 
 ### Base URL
 
@@ -298,11 +235,6 @@ Production: https://your-deployed-url.com
 Analyzes a string and stores its computed properties.
 
 **Endpoint:** `POST /strings`
-
-**Headers:**
-```
-Content-Type: application/json
-```
 
 **Request Body:**
 ```json
@@ -340,13 +272,6 @@ Content-Type: application/json
 | **409 Conflict** | String already exists | `{"status": 409, "error": "Conflict", "message": "String already exists in the system"}` |
 | **400 Bad Request** | Missing value field | `{"status": 400, "error": "Bad Request", "message": "Invalid request body or missing 'value' field"}` |
 | **422 Unprocessable Entity** | Invalid data type (not string) | `{"status": 422, "error": "Unprocessable Entity", "message": "Invalid data type for 'value' (must be string)"}` |
-
-**cURL Example:**
-```bash
-curl -X POST http://localhost:8080/strings \
-  -H "Content-Type: application/json" \
-  -d '{"value": "racecar"}'
-```
 
 ---
 
@@ -386,15 +311,6 @@ Retrieves a previously analyzed string by its value.
 | Status Code | Description |
 |------------|-------------|
 | **404 Not Found** | String does not exist in the system |
-
-**cURL Examples:**
-```bash
-# Get a string
-curl http://localhost:8080/strings/racecar
-
-# Get a string with spaces (URL encoded)
-curl http://localhost:8080/strings/hello%20world
-```
 
 ---
 
@@ -468,28 +384,6 @@ Retrieves all stored strings with optional filters.
 |------------|-------------|
 | **400 Bad Request** | Invalid query parameter values or types |
 
-**cURL Examples:**
-
-```bash
-# Get all strings
-curl http://localhost:8080/strings
-
-# Filter by palindrome
-curl "http://localhost:8080/strings?is_palindrome=true"
-
-# Filter by length range
-curl "http://localhost:8080/strings?min_length=5&max_length=20"
-
-# Filter by word count
-curl "http://localhost:8080/strings?word_count=1"
-
-# Filter by character
-curl "http://localhost:8080/strings?contains_character=a"
-
-# Multiple filters
-curl "http://localhost:8080/strings?is_palindrome=true&min_length=5&word_count=1"
-```
-
 ---
 
 ### 4. Natural Language Filtering
@@ -550,20 +444,6 @@ Filters strings using natural language queries.
 | Status Code | Description |
 |------------|-------------|
 | **400 Bad Request** | Unable to parse natural language query |
-| **422 Unprocessable Entity** | Query parsed but resulted in conflicting filters |
-
-**cURL Examples:**
-
-```bash
-# Single word palindromes
-curl "http://localhost:8080/strings/filter-by-natural-language?query=all%20single%20word%20palindromic%20strings"
-
-# Long strings
-curl "http://localhost:8080/strings/filter-by-natural-language?query=strings%20longer%20than%2010%20characters"
-
-# Contains specific character
-curl "http://localhost:8080/strings/filter-by-natural-language?query=strings%20containing%20the%20letter%20z"
-```
 
 ---
 
@@ -584,80 +464,9 @@ Deletes a stored string by its value.
 |------------|-------------|
 | **404 Not Found** | String does not exist in the system |
 
-**cURL Examples:**
-
-```bash
-# Delete a string
-curl -X DELETE http://localhost:8080/strings/racecar
-
-# Delete a string with spaces
-curl -X DELETE http://localhost:8080/strings/hello%20world
-```
-
 ---
 
-## 🧪 Testing Guide
-
-### Quick Start Testing
-
-#### 1. Create Test Data
-
-```bash
-# Create palindromes
-curl -X POST http://localhost:8080/strings -H "Content-Type: application/json" -d '{"value": "racecar"}'
-curl -X POST http://localhost:8080/strings -H "Content-Type: application/json" -d '{"value": "level"}'
-curl -X POST http://localhost:8080/strings -H "Content-Type: application/json" -d '{"value": "noon"}'
-curl -X POST http://localhost:8080/strings -H "Content-Type: application/json" -d '{"value": "radar"}'
-
-# Create non-palindromes
-curl -X POST http://localhost:8080/strings -H "Content-Type: application/json" -d '{"value": "hello"}'
-curl -X POST http://localhost:8080/strings -H "Content-Type: application/json" -d '{"value": "world"}'
-curl -X POST http://localhost:8080/strings -H "Content-Type: application/json" -d '{"value": "programming"}'
-
-# Create multi-word strings
-curl -X POST http://localhost:8080/strings -H "Content-Type: application/json" -d '{"value": "hello world"}'
-curl -X POST http://localhost:8080/strings -H "Content-Type: application/json" -d '{"value": "A man a plan a canal Panama"}'
-```
-
-#### 2. Test Retrieval
-
-```bash
-# Get all strings
-curl http://localhost:8080/strings
-
-# Get specific string
-curl http://localhost:8080/strings/racecar
-```
-
-#### 3. Test Filtering
-
-```bash
-# All palindromes
-curl "http://localhost:8080/strings?is_palindrome=true"
-
-# Strings with length 5-10
-curl "http://localhost:8080/strings?min_length=5&max_length=10"
-
-# Single-word strings
-curl "http://localhost:8080/strings?word_count=1"
-
-# Strings containing 'a'
-curl "http://localhost:8080/strings?contains_character=a"
-```
-
-#### 4. Test Natural Language
-
-```bash
-curl "http://localhost:8080/strings/filter-by-natural-language?query=all%20single%20word%20palindromic%20strings"
-```
-
-#### 5. Test Deletion
-
-```bash
-curl -X DELETE http://localhost:8080/strings/hello
-```
-
----
+## Testing Guide
 
 ### Testing with Postman
 
@@ -702,80 +511,9 @@ Create a Postman collection with these requests:
   "baseUrl": "http://localhost:8080"
 }
 ```
-
 ---
 
-### Automated Testing
-
-Run unit tests:
-
-```bash
-mvn test
-```
-
-Run with coverage:
-
-```bash
-mvn clean test jacoco:report
-```
-
----
-
-### Test Scenarios
-
-#### Scenario 1: Type Validation
-
-```bash
-# Should FAIL - Integer value
-curl -X POST http://localhost:8080/strings \
-  -H "Content-Type: application/json" \
-  -d '{"value": 12345}'
-# Expected: 422 Unprocessable Entity
-
-# Should FAIL - Boolean value
-curl -X POST http://localhost:8080/strings \
-  -H "Content-Type: application/json" \
-  -d '{"value": true}'
-# Expected: 422 Unprocessable Entity
-
-# Should WORK - String value
-curl -X POST http://localhost:8080/strings \
-  -H "Content-Type: application/json" \
-  -d '{"value": "hello"}'
-# Expected: 201 Created
-```
-
-#### Scenario 2: Duplicate Prevention
-
-```bash
-# Create string
-curl -X POST http://localhost:8080/strings \
-  -H "Content-Type: application/json" \
-  -d '{"value": "test"}'
-# Expected: 201 Created
-
-# Try to create again
-curl -X POST http://localhost:8080/strings \
-  -H "Content-Type: application/json" \
-  -d '{"value": "test"}'
-# Expected: 409 Conflict
-```
-
-#### Scenario 3: Palindrome Detection
-
-```bash
-# Create palindromes
-curl -X POST http://localhost:8080/strings -H "Content-Type: application/json" -d '{"value": "A man a plan a canal Panama"}'
-# Should detect as palindrome (case-insensitive, ignores spaces)
-
-# Filter palindromes
-curl "http://localhost:8080/strings?is_palindrome=true"
-# Should include "A man a plan a canal Panama"
-```
-
----
-
-## 🚀 Deployment
+## Deployment
 
 ### Deploy to Railway
 
@@ -809,100 +547,6 @@ Railway provides easy deployment with automatic HTTPS and custom domains.
     - Get your URL: `https://your-app.railway.app`
 
 **Cost:** Free tier available (500 hours/month)
-
----
-
-### Deploy to Heroku
-
-**Prerequisites:**
-- Heroku account
-- Heroku CLI installed
-
-**Steps:**
-
-```bash
-# Login
-heroku login
-
-# Create app
-heroku create your-app-name
-
-# Add Java buildpack
-heroku buildpacks:set heroku/java
-
-# Deploy
-git push heroku main
-
-# Open app
-heroku open
-```
-
-**Your API will be at:** `https://your-app-name.herokuapp.com`
-
-**Cost:** Free tier available (550-1000 dyno hours/month)
-
----
-
-### Deploy to AWS Elastic Beanstalk
-
-**Prerequisites:**
-- AWS account
-- EB CLI installed
-
-**Steps:**
-
-```bash
-# Install EB CLI
-pip install awsebcli
-
-# Initialize
-eb init -p java-17 string-analyzer
-
-# Create environment
-eb create string-analyzer-env
-
-# Deploy
-eb deploy
-
-# Get URL
-eb status
-```
-
-**Cost:** Pay-as-you-go (typically $10-50/month for small apps)
-
----
-
-### Deploy with Docker
-
-**Create Dockerfile:**
-
-```dockerfile
-FROM eclipse-temurin:17-jdk-alpine
-WORKDIR /app
-COPY target/string-analyzer-0.0.1-SNAPSHOT.jar app.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
-```
-
-**Build and run:**
-
-```bash
-# Build JAR
-mvn clean package
-
-# Build Docker image
-docker build -t string-analyzer .
-
-# Run container
-docker run -p 8080:8080 string-analyzer
-```
-
-**Deploy to Docker Hub:**
-
-```bash
-docker tag string-analyzer yourusername/string-analyzer
-docker push yourusername/string-analyzer
-```
 
 ---
 
@@ -986,30 +630,11 @@ All errors return a consistent JSON format:
 | **422** | Unprocessable Entity | Invalid data type | Value is number, not string |
 | **500** | Internal Server Error | Unexpected error | Server crashed |
 
-### Common Error Scenarios
 
-#### 1. Duplicate String (409)
+## 👤 Author
 
-**Request:**
-```bash
-curl -X POST http://localhost:8080/strings \
-  -H "Content-Type: application/json" \
-  -d '{"value": "racecar"}'
-
-# Try again
-curl -X POST http://localhost:8080/strings \
-  -H "Content-Type: application/json" \
-  -d '{"value": "racecar"}'
-```
-
-**Response:**
-```json
-{
-  "timestamp": "2025-10-21T16:00:00",
-  "status": 409,
-  "error": "Conflict",
-  "message": "String already exists in the system"
-}
-```
-
-####
+**Name:** AYOBAMI ADEPOJU  
+**Email:** ayobamiadepoju263@gmail.com  
+**Stack:** Java / Spring Boot  
+**GitHub:** [@ayobamiadepoju](https://github.com/ayobamiadepoju)
+---
