@@ -33,8 +33,8 @@ public class StringAnalyzerService {
             }
         }
         AnalyzedString analyzedString = analyzeString(value);
-        storage.save(analyzedString);
-        return convertToResponse(analyzedString);
+        StringResponse response = storage.save(analyzedString);
+        return convertToResponse(response);
     }
 
     public StringResponse findString(String value) throws NoSuchAlgorithmException {
