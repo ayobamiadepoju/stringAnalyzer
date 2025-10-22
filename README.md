@@ -22,11 +22,9 @@ A high-performance RESTful API service that analyzes strings and stores their co
     - [Endpoint 5: Delete String](#5-delete-string)
 - [Testing Guide](#testing-guide)
 - [Deployment](#deployment)
-- [Project Structure](#project-structure)
-- [Error Handling](#error-handling)
-- [Performance](#performance)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
+- [Project Structure](#-project-structure)
+- [Error Handling](#-error-handling)
+- [Author](#-author)
 
 ---
 
@@ -79,7 +77,7 @@ The String Analyzer API is a production-ready backend service designed for the B
 
 ---
 
-## 🛠Tech Stack
+## Tech Stack
 
 | Technology | Version  | Purpose |
 |-----------|----------|---------|
