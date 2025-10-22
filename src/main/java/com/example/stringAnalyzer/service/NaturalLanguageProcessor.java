@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Service
 public class NaturalLanguageProcessor {
@@ -68,17 +67,41 @@ public class NaturalLanguageProcessor {
         // Convert to response
         List<StringResponse> data = results.stream()
                 .map(this::convertToResponse)
-                .collect(Collectors.toList());
+                .toList();
 
         // Build response
         NaturalLanguageResponse response = new NaturalLanguageResponse();
         response.setData(data);
         response.setCount(data.size());
         response.setInterpretedQuery(
-                new InterpretedQuery(query, parsedFilters)
+                new InterpretedQuery(query ,parsedFilters)
         );
 
         return response;
+    }
+
+    // Apply parsed filters to storage
+    private List<AnalyzedString> applyFilters(Map<String, Object> filters) {
+        Boolean isPalindrome = (Boolean) filters.get("is_palindrome");
+        Integer minLength = (Integer) filters.get("min_length");
+        Integer maxLength = (Integer) filters.get("max_length");
+        Integer wordCount = (Integer) filters.get("word_count");
+        String containsCharacter = (String) filters.get("contains_character");
+
+        // Get from storage
+        List<AnalyzedString> results = storage.findByFilters(
+                isPalindrome, minLength, maxLength, wordCount
+        );
+
+        // Post-filter for character containment
+        if (containsCharacter != null && !containsCharacter.isEmpty()) {
+            results = results.stream()
+                    .filter(s -> s.getValue().toLowerCase()
+                            .contains(containsCharacter.toLowerCase()))
+                    .toList();
+        }
+
+        return results;
     }
 
     private StringResponse convertToResponse(AnalyzedString analyzed) {
@@ -97,29 +120,5 @@ public class NaturalLanguageProcessor {
                 properties,
                 analyzed.getCreatedAt()
         );
-    }
-
-    // Apply parsed filters to storage
-    private List<AnalyzedString> applyFilters(Map<String, Object> filters) {
-        Boolean isPalindrome = (Boolean) filters.get("is_palindrome");
-        Integer minLength = (Integer) filters.get("min_length");
-        Integer maxLength = (Integer) filters.get("max_length");
-        Integer wordCount = (Integer) filters.get("word_count");
-        String containsCharacter = (String) filters.get("contains_character");
-
-        // Get from storage
-        List<AnalyzedString> results = storage.findByFilters(
-                isPalindrome, minLength, maxLength, wordCount
-        );
-
-        // Post-filter for character containment
-        if (containsCharacter != null) {
-            results = results.stream()
-                    .filter(s -> s.getValue().toLowerCase()
-                            .contains(containsCharacter.toLowerCase()))
-                    .collect(Collectors.toList());
-        }
-
-        return results;
     }
 }

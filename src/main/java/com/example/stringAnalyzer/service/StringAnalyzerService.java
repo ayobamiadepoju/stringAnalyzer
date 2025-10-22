@@ -33,18 +33,16 @@ public class StringAnalyzerService {
             }
         }
         AnalyzedString analyzedString = analyzeString(value);
-        StringResponse response = storage.save(analyzedString);
-        return convertToResponse(response);
+        storage.save(analyzeString(value));
+        return convertToResponse(analyzedString);
     }
 
-    public StringResponse findString(String value) throws NoSuchAlgorithmException {
+    public StringResponse findString(String value) throws NoSuchAlgorithmException, StringNotFoundException {
         AnalyzedString analyzedString = null;
-        try {
+
             analyzedString = storage.findByValue(value)
                     .orElseThrow(() -> new StringNotFoundException("String does not exist"));
-        } catch (StringNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+
         return convertToResponse(analyzedString);
     }
 

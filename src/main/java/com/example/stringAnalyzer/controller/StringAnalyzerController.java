@@ -4,13 +4,14 @@ import com.example.stringAnalyzer.dto.NaturalLanguageResponse;
 import com.example.stringAnalyzer.dto.StringListResponse;
 import com.example.stringAnalyzer.dto.StringRequest;
 import com.example.stringAnalyzer.dto.StringResponse;
+import com.example.stringAnalyzer.exception.InvalidQueryException;
+import com.example.stringAnalyzer.exception.StringNotFoundException;
 import com.example.stringAnalyzer.service.NaturalLanguageProcessor;
 import com.example.stringAnalyzer.service.StringAnalyzerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +41,7 @@ public class StringAnalyzerController {
     }
 
     @GetMapping("/strings/{string_value}")
-    public ResponseEntity<StringResponse> getString(@PathVariable("string_value") String value) throws NoSuchAlgorithmException {
+    public ResponseEntity<StringResponse> getString(@PathVariable("string_value") String value) throws NoSuchAlgorithmException, StringNotFoundException {
         StringResponse response = analyzerService.findString(value);
 
         return ResponseEntity
@@ -62,12 +63,10 @@ public class StringAnalyzerController {
 
     @GetMapping("/strings/filter-by-natural-language")
     public ResponseEntity<NaturalLanguageResponse> filterByNaturalLanguage(
-            @RequestParam String query) {
+            @RequestParam String query) throws InvalidQueryException {
 
         if (query == null || query.trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Unable to parse natural language query"
-            );
+            throw new InvalidQueryException("Unable to parse natural language query");
         }
 
         NaturalLanguageResponse response = naturalLanguageProcessor.processNaturalLanguageQuery(query);
